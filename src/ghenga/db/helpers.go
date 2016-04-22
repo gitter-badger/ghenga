@@ -1,20 +1,30 @@
 package db
 
-import "github.com/jmoiron/modl"
+import (
+	"github.com/jmoiron/modl"
+	"github.com/manveru/faker"
+)
 
 // CreateFakePeople will populate the db with num fake person profiles.
-func CreateFakePeople(db *modl.DbMap, num int) error {
-	for i := 0; i < num; i++ {
-		sex := randomdata.Male
-		if i%2 == 0 {
-			sex = randomdata.Female
-		}
-		p := Person{
-			Name:    randomdata.FirstName(sex) + " " + randomdata.LastName(),
-			Comment: "fake user",
-		}
+func CreateFakePeople(dbm *modl.DbMap, num int) error {
+	f, err := faker.New("en")
+	if err != nil {
+		return err
+	}
 
-		db.MustExec(`INSERT INTO people (name, comment) VALUES (?, ?)`, p.Name, p.Comment)
+	for i := 0; i < num; i++ {
+		p := NewPerson(f.Name())
+
+		p.EmailAddress = f.Email()
+		p.PhoneMobile = f.PhoneNumber()
+		p.PhoneWork = f.PhoneNumber()
+
+		p.Comment = "fake profile"
+
+		err := dbm.Insert(p)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

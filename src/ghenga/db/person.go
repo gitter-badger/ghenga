@@ -41,10 +41,10 @@ type PhoneNumberJSON struct {
 
 // NewPerson returns a new person record with the timestamps set to the current
 // time.
-func NewPerson(name string) Person {
+func NewPerson(name string) *Person {
 	ts := time.Now()
 
-	return Person{
+	return &Person{
 		Name:      name,
 		CreatedAt: ts,
 		ChangedAt: ts,
