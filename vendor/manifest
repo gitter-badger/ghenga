@@ -38,6 +38,12 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/manveru/faker",
+			"repository": "https://github.com/manveru/faker",
+			"revision": "717f7cf83fb78669bfab612749c2e8ff63d5be11",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/mattn/go-sqlite3",
 			"repository": "https://github.com/mattn/go-sqlite3",
 			"revision": "467f50b0c026317ad28fc2c0a08aab6f755cfc7a",
