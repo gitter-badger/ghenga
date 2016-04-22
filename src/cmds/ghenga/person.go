@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // Person is a person in the database.
 type Person struct {
@@ -19,6 +22,7 @@ type Person struct {
 
 // PersonJSON is the JSON representation of a Person as returned by the API.
 type PersonJSON struct {
+	ID           int64
 	Name         string            `json:"name"`
 	EmailAddress string            `json:"email_address"`
 	PhoneNumbers []PhoneNumberJSON `json:"phone_numbers"`
@@ -41,8 +45,40 @@ func NewPerson(name string) Person {
 	ts := time.Now()
 
 	return Person{
-		Name: name,
+		Name:      name,
 		CreatedAt: ts,
 		ChangedAt: ts,
 	}
+}
+
+const timeLayout = "2006-01-02T15:04:05-07:00"
+
+// MarshalJSON returns the JSON representation of p.
+func (p *Person) MarshalJSON() ([]byte, error) {
+	jp := PersonJSON{
+		ID:           p.ID,
+		Name:         p.Name,
+		EmailAddress: p.EmailAddress,
+
+		Comment:   p.Comment,
+		ChangedAt: p.ChangedAt.Format(timeLayout),
+		CreatedAt: p.CreatedAt.Format(timeLayout),
+	}
+
+	var numbers []PhoneNumberJSON
+
+	for _, num := range []struct{ t, n string }{
+		{"work", p.PhoneWork}, {"mobile", p.PhoneMobile}, {"other", p.PhoneOther},
+	} {
+		if num.n == "" {
+			continue
+		}
+
+		numbers = append(numbers, PhoneNumberJSON{
+			Type:   "work",
+			Number: p.PhoneWork,
+		})
+	}
+
+	return json.Marshal(jp)
 }

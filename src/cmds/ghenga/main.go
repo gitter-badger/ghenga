@@ -1,43 +1,41 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	"github.com/jessevdk/go-flags"
+	"github.com/jmoiron/modl"
 )
 
-func HandlePerson(res http.ResponseWriter, req *http.Request) {
-
-}
-
-func HandleDefault(res http.ResponseWriter, req *http.Request) {
-	log.Printf("default handler called")
-}
+var DBM *modl.DbMap
 
 func main() {
-	dbmap, err := initDB("db/test.sqlite3")
+	var err error
+	DBM, err = initDB("db/test.sqlite3")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	defer func() {
-		err := dbmap.Db.Close()
+		err := DBM.Db.Close()
 		if err != nil {
 			log.Fatal(err)
 		}
 	}()
 
+	_, err = parser.Parse()
+	if e, ok := err.(*flags.Error); ok && e.Type == flags.ErrHelp {
+		parser.WriteHelp(os.Stdout)
+		os.Exit(0)
+	}
 
-	r := mux.NewRouter()
-	r.HandleFunc("/api/person", HandlePerson)
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("public")))
-
-	http.Handle("/", handlers.CombinedLoggingHandler(os.Stderr, r))
-	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+	}
+
+	if err != nil {
+		os.Exit(1)
 	}
 }
