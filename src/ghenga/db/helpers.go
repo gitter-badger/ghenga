@@ -16,7 +16,7 @@ func CreateFakePeople(dbm *modl.DbMap, num int) error {
 		p := NewPerson(f.Name())
 
 		p.EmailAddress = f.Email()
-		p.PhoneMobile = f.PhoneNumber()
+		p.PhoneMobile = f.CellPhoneNumber()
 		p.PhoneWork = f.PhoneNumber()
 
 		p.Comment = "fake profile"

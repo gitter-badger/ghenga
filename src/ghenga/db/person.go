@@ -80,5 +80,7 @@ func (p *Person) MarshalJSON() ([]byte, error) {
 		})
 	}
 
+	jp.PhoneNumbers = numbers
+
 	return json.Marshal(jp)
 }
