@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"ghenga/db"
 	"log"
 	"net/http"
 	"os"
@@ -13,7 +14,7 @@ import (
 
 // ListPeople handles listing person records.
 func ListPeople(res http.ResponseWriter, req *http.Request) (code int, err error) {
-	people := []Person{}
+	people := []db.Person{}
 	err = DBM.Select(&people, "select * from people")
 	if err != nil {
 		return 0, err

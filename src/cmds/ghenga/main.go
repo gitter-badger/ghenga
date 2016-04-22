@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"ghenga/db"
 	"log"
 	"os"
 
@@ -9,11 +10,12 @@ import (
 	"github.com/jmoiron/modl"
 )
 
+// DBM is the global database map singleton.
 var DBM *modl.DbMap
 
 func main() {
 	var err error
-	DBM, err = initDB("db/test.sqlite3")
+	DBM, err = db.Init("db/test.sqlite3")
 	if err != nil {
 		log.Fatal(err)
 	}
