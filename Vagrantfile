@@ -29,7 +29,7 @@ Vagrant.configure(2) do |config|
        apt-get -y dist-upgrade
 
        apt-get install -y git golang-go golang-golang-x-tools vim tmux screen zsh sqlite3 npm
-       ln -s /usr/bin/nodejs /usr/bin/node
+       ln -sf /usr/bin/nodejs /usr/bin/node
        npm install -g bower
   SHELL
 
