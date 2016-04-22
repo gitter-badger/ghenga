@@ -20,6 +20,12 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/jessevdk/go-flags",
+			"repository": "https://github.com/jessevdk/go-flags",
+			"revision": "6b9493b3cb60367edd942144879646604089e3f7",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/jmoiron/modl",
 			"repository": "https://github.com/jmoiron/modl",
 			"revision": "99654d091ece9b281eec23c9e6fe9ff960e1baa1",
