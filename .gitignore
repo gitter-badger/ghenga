@@ -2,3 +2,4 @@
 /bin
 /db/*
 /vendor/pkg
+/.vagrant
