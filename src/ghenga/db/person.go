@@ -22,7 +22,7 @@ type Person struct {
 
 // PersonJSON is the JSON representation of a Person as returned by the API.
 type PersonJSON struct {
-	ID           int64
+	ID           int64             `json:"id"`
 	Name         string            `json:"name"`
 	EmailAddress string            `json:"email_address"`
 	PhoneNumbers []PhoneNumberJSON `json:"phone_numbers"`
