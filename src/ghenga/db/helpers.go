@@ -13,7 +13,7 @@ func CreateFakePeople(dbm *modl.DbMap, num int) error {
 	}
 
 	for i := 0; i < num; i++ {
-		p := NewPerson(f.Name())
+		p := NewPerson(f.FirstName() + " " + f.LastName())
 
 		p.EmailAddress = f.Email()
 		p.PhoneMobile = f.CellPhoneNumber()

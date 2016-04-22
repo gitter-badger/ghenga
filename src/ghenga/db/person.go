@@ -75,8 +75,8 @@ func (p *Person) MarshalJSON() ([]byte, error) {
 		}
 
 		numbers = append(numbers, PhoneNumberJSON{
-			Type:   "work",
-			Number: p.PhoneWork,
+			Type:   num.t,
+			Number: num.n,
 		})
 	}
 
