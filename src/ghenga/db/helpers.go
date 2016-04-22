@@ -7,7 +7,7 @@ import (
 
 // CreateFakePeople will populate the db with num fake person profiles.
 func CreateFakePeople(dbm *modl.DbMap, num int) error {
-	f, err := faker.New("en")
+	f, err := faker.New("de")
 	if err != nil {
 		return err
 	}
