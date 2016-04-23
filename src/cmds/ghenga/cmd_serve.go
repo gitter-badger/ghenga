@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"ghenga"
+	"ghenga/server"
 	"ghenga/db"
 	"log"
 	"net/http"
@@ -16,25 +16,27 @@ import (
 var DBM *modl.DbMap
 
 // ListPeople handles listing person records.
-func ListPeople(res http.ResponseWriter, req *http.Request) (code int, err error) {
+func ListPeople(res http.ResponseWriter, req *http.Request) error {
 	people := []db.Person{}
-	err = DBM.Select(&people, "select * from people")
+	err := DBM.Select(&people, "select * from people")
 	if err != nil {
-		return 0, err
+		return err
 	}
 	log.Printf("loaded %v person records", len(people))
 
 	buf, err := json.Marshal(people)
 	if err != nil {
-		return 0, err
+		return err
 	}
+
+	res.WriteHeader(http.StatusOK)
 
 	_, err = res.Write(buf)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	return http.StatusOK, nil
+	return nil
 }
 
 type cmdServe struct {
@@ -62,7 +64,7 @@ func (opts *cmdServe) Execute(args []string) (err error) {
 	log.Printf("starting server at port %v", opts.Port)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/api/person", ghenga.WrapError(ListPeople)).Methods("GET")
+	r.Handle("/api/person", server.Handler{HandleFunc: ListPeople}).Methods("GET")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("public")))
 
 	http.Handle("/", handlers.CombinedLoggingHandler(os.Stderr, r))
