@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"ghenga"
 	"ghenga/db"
 	"log"
 	"net/http"
@@ -10,7 +10,10 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/jmoiron/modl"
 )
+
+var DBM *modl.DbMap
 
 // ListPeople handles listing person records.
 func ListPeople(res http.ResponseWriter, req *http.Request) (code int, err error) {
@@ -34,26 +37,6 @@ func ListPeople(res http.ResponseWriter, req *http.Request) (code int, err error
 	return http.StatusOK, nil
 }
 
-// ErrorHandler is an http.Handler with explicit return values.
-type ErrorHandler func(http.ResponseWriter, *http.Request) (int, error)
-
-// DefaultHandler is the default handler function signature from net/http.
-type DefaultHandler func(res http.ResponseWriter, req *http.Request)
-
-// WrapError takes an ErrorHandler and returns a DefaultHandler.
-func WrapError(h ErrorHandler) DefaultHandler {
-	return func(res http.ResponseWriter, req *http.Request) {
-		code, err := h(res, req)
-		if err != nil {
-			res.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(res, "error: %v\n", err)
-			return
-		}
-
-		res.WriteHeader(code)
-	}
-}
-
 type cmdServe struct {
 	Port uint `short:"p" long:"port" default:"8080" description:"set the port for the HTTP server"`
 }
@@ -68,15 +51,22 @@ func init() {
 	}
 }
 
-func (opts *cmdServe) Execute(args []string) error {
+func (opts *cmdServe) Execute(args []string) (err error) {
+	var cleanup func() error
+	DBM, cleanup, err = OpenDB()
+	if err != nil {
+		return err
+	}
+	defer CleanupErr(&err, cleanup)
+
 	log.Printf("starting server at port %v", opts.Port)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/api/person", WrapError(ListPeople)).Methods("GET")
+	r.HandleFunc("/api/person", ghenga.WrapError(ListPeople)).Methods("GET")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("public")))
 
 	http.Handle("/", handlers.CombinedLoggingHandler(os.Stderr, r))
-	err := http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,11 +1,8 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"ghenga/db"
 	"log"
-	"os"
 )
 
 type cmdFakedata struct {
@@ -22,31 +19,20 @@ func init() {
 	}
 }
 
-func (opts *cmdFakedata) Execute(args []string) error {
-	if len(args) != 1 {
-		return errors.New("no database file specified")
+func (opts *cmdFakedata) Execute(args []string) (err error) {
+	dbm, cleanup, e := OpenDB()
+	if e != nil {
+		return e
 	}
+	defer CleanupErr(&err, cleanup)
 
-	dbfile := os.Args[0]
-	dbmap, err := db.Init(dbfile)
+	log.Printf("create %v people...", opts.People)
+
+	err = db.CreateFakePeople(dbm, opts.People)
 	if err != nil {
 		panic(err)
 	}
-
-	defer func() {
-		err := dbmap.Db.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	fmt.Printf("create %v people...", opts.People)
-
-	err = db.CreateFakePeople(dbmap, opts.People)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("done\n")
+	log.Printf("done")
 
 	return nil
 }
