@@ -1,46 +1,15 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
 	"ghenga/server"
-	"ghenga/db"
 	"log"
-	"net/http"
-	"os"
-
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
-	"github.com/jmoiron/modl"
 )
 
-var DBM *modl.DbMap
-
-// ListPeople handles listing person records.
-func ListPeople(res http.ResponseWriter, req *http.Request) error {
-	people := []db.Person{}
-	err := DBM.Select(&people, "select * from people")
-	if err != nil {
-		return err
-	}
-	log.Printf("loaded %v person records", len(people))
-
-	buf, err := json.Marshal(people)
-	if err != nil {
-		return err
-	}
-
-	res.WriteHeader(http.StatusOK)
-
-	_, err = res.Write(buf)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 type cmdServe struct {
-	Port uint `short:"p" long:"port" default:"8080" description:"set the port for the HTTP server"`
+	Port   uint   `short:"p" long:"port"   default:"8080"   description:"set the port for the HTTP server"`
+	Addr   string `short:"b" long:"bind"   default:""       description:"bind to this address"`
+	Public string `          long:"public" default:"public" description:"the directory to server static files from"`
 }
 
 func init() {
@@ -54,21 +23,20 @@ func init() {
 }
 
 func (opts *cmdServe) Execute(args []string) (err error) {
-	var cleanup func() error
-	DBM, cleanup, err = OpenDB()
-	if err != nil {
-		return err
+	dbmap, cleanup, e := OpenDB()
+	if e != nil {
+		return e
 	}
 	defer CleanupErr(&err, cleanup)
 
-	log.Printf("starting server at port %v", opts.Port)
+	log.Printf("starting server at %v:%d", opts.Addr, opts.Port)
 
-	r := mux.NewRouter()
-	r.Handle("/api/person", server.Handler{HandleFunc: ListPeople}).Methods("GET")
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("public")))
+	env := &server.Env{
+		ListenAddr: fmt.Sprintf("%s:%d", opts.Addr, opts.Port),
+		DbMap:      dbmap,
+	}
 
-	http.Handle("/", handlers.CombinedLoggingHandler(os.Stderr, r))
-	err = http.ListenAndServe(":8080", nil)
+	err = server.ListenAndServe(env)
 	if err != nil {
 		log.Fatal(err)
 	}
