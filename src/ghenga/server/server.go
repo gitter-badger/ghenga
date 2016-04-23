@@ -38,9 +38,15 @@ func ListPeople(env *Env, res http.ResponseWriter, req *http.Request) error {
 // ListenAndServe starts a new ghenga API server with the given environment.
 func ListenAndServe(env *Env) (err error) {
 	r := mux.NewRouter()
+
+	// API routes
 	r.Handle("/api/person", Handler{HandleFunc: ListPeople, Env: env}).Methods("GET")
+
+	// server static files
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir(env.Public)))
 
-	http.Handle("/", handlers.CombinedLoggingHandler(os.Stderr, r))
+	// activate logging to stdout
+	http.Handle("/", handlers.CombinedLoggingHandler(os.Stdout, r))
+
 	return http.ListenAndServe(env.ListenAddr, nil)
 }
