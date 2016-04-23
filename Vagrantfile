@@ -42,6 +42,7 @@ Vagrant.configure(2) do |config|
 
        go get github.com/rubenv/modl-migrate/...
        go get github.com/constabulary/gb/...
+       go get github.com/derekparker/delve/cmd/dlv
   SHELL
 
   # Disable automatic box update checking. If you disable this, then
