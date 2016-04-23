@@ -28,15 +28,21 @@ Vagrant.configure(2) do |config|
        apt-get update
        apt-get -y dist-upgrade
 
-       apt-get install -y git golang-go golang-golang-x-tools vim tmux screen zsh sqlite3 npm
+       apt-get install -y curl wget git vim tmux screen zsh sqlite3 npm
        ln -sf /usr/bin/nodejs /usr/bin/node
        npm install -g bower
   SHELL
 
   config.vm.provision "shell", :privileged => false, inline: <<-SHELL
+       wget -q -O /tmp/go.tar.gz https://storage.googleapis.com/golang/go1.6.2.linux-amd64.tar.gz
+       mkdir .local
+       cd .local/
+       tar xzf /tmp/go.tar.gz
+
+       echo 'export GOROOT=$HOME/.local/go' >> ~/.profile
        echo 'export GOPATH=$HOME/go' >> ~/.profile
        echo 'export GOBIN=$HOME/bin' >> ~/.profile
-       echo 'export PATH=$PATH:$GOBIN' >> ~/.profile
+       echo 'export PATH=$PATH:$GOROOT/bin:$GOBIN' >> ~/.profile
 
        source ~/.profile
 
