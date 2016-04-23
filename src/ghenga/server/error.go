@@ -8,11 +8,15 @@ type Error interface {
 
 // statusError bundles an HTTP status code with an error.
 type StatusError struct {
-	error
-	status int
+	Err  error
+	Code int
 }
 
 // Status returns the HTTP status for this error
 func (err StatusError) Status() int {
-	return err.status
+	return err.Code
+}
+
+func (err StatusError) Error() string {
+	return err.Err.Error()
 }
