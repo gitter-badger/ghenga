@@ -9,7 +9,7 @@ import (
 	"github.com/jmoiron/modl"
 )
 
-// Init initialises and opens the database.
+// Init opens the database. If the database does not exist yet, it is created.
 func Init(dbfile string) (*modl.DbMap, error) {
 	db, err := sql.Open("sqlite3", dbfile)
 	if err != nil {
