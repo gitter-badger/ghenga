@@ -1,16 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"ghenga/db"
-	"os"
+	"log"
 
 	"github.com/jessevdk/go-flags"
 	"github.com/jmoiron/modl"
 )
 
 type globalOptions struct {
-	Environment string `short:"e" long:"environment" default:"production" description:"Environment to use"`
+	Environment string `short:"e" long:"environment" default:"production" env:"GHENGA_ENV" description:"Environment to use"`
 }
 
 func (opts *globalOptions) DatabaseFilename() string {
@@ -21,7 +20,7 @@ func (opts *globalOptions) DatabaseFilename() string {
 		return "db/production.db"
 	}
 
-	fmt.Fprintf(os.Stderr, "invalid environment %q, using production", opts.Environment)
+	log.Printf("invalid environment %q, using production", opts.Environment)
 	opts.Environment = "production"
 	return opts.DatabaseFilename()
 }
@@ -40,4 +39,3 @@ func OpenDB() (dbm *modl.DbMap, cleanup func() error, err error) {
 
 var globalOpts = globalOptions{}
 var parser = flags.NewParser(&globalOpts, flags.HelpFlag|flags.PassDoubleDash)
-
