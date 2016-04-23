@@ -10,4 +10,4 @@ ghenga can then be built and started with the following commands:
 
     cd ghenga
     gb build
-    bin/ghenga
+    bin/ghenga serve
