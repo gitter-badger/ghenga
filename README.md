@@ -10,11 +10,28 @@ The default vagrant base box is `ubuntu/xerus64`, if you need to use Parallels
 instead of VirtualBox, you can provision and use a different base image as
 follows:
 
-    export GHENGA_VAGRANT_BOX=ffuenf/ubuntu-16.04-server-amd64
-    vagrant up
+```shell
+export GHENGA_VAGRANT_BOX=boxcutter/ubuntu1604
+vagrant up
+```
 
-ghenga can then be built and started with the following commands:
+While the VirtualBox download is running, you can clone the [ghenga-ui
+repository](https://github.com/ghenga/ghenga-ui):
 
-    cd ghenga
-    gb build
-    bin/ghenga serve
+```shell
+git clone https://github.com/ghenga/ghenga-ui
+```
+
+Afterwards, log into the virtual machine:
+
+```
+vagrant ssh
+```
+
+Then run the following commands to build and start the ghenga server:
+
+```shell
+cd ghenga
+gb build
+bin/ghenga serve --public ghenga-ui/app
+```
