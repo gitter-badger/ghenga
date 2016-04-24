@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = ENV["GHENGA_VAGRANT_BOX"] || "ubuntu/xerus64"
+  config.vm.box = ENV["GHENGA_VAGRANT_BOX"] || "ubuntu/wily64"
 
   # fix slow network
   config.vm.provider "virtualbox" do |v|
