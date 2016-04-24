@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"errors"
 	"ghenga/db"
 	"log"
 	"net/http"
@@ -24,11 +23,6 @@ func ListPeople(env *Env, res http.ResponseWriter, req *http.Request) error {
 	buf, err := json.Marshal(people)
 	if err != nil {
 		return err
-	}
-
-	return StatusError{
-		Err:  errors.New("foo"),
-		Code: http.StatusConflict,
 	}
 
 	_, err = res.Write(buf)
