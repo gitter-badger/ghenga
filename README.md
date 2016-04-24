@@ -1,4 +1,6 @@
 # ghenga
+
+[![Join the chat at https://gitter.im/ghenga/ghenga](https://badges.gitter.im/ghenga/ghenga.svg)](https://gitter.im/ghenga/ghenga?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 The ghenga micro CRM
 
 ## Getting Started
