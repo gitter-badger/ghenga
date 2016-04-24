@@ -25,6 +25,7 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder ".", "/home/vagrant/ghenga"
 
   config.vm.provision "shell", inline: <<-SHELL
+       export DEBIAN_FRONTEND=noninteractive
        apt-get update
        apt-get -y dist-upgrade
 
