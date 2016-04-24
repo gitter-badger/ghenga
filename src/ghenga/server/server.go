@@ -1,7 +1,6 @@
 package server
 
 import (
-	"encoding/json"
 	"ghenga/db"
 	"log"
 	"net/http"
@@ -20,17 +19,7 @@ func ListPeople(env *Env, res http.ResponseWriter, req *http.Request) error {
 	}
 	log.Printf("loaded %v person records", len(people))
 
-	buf, err := json.Marshal(people)
-	if err != nil {
-		return err
-	}
-
-	_, err = res.Write(buf)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return httpWriteJSON(res, http.StatusOK, people)
 }
 
 // ListenAndServe starts a new ghenga API server with the given environment.
